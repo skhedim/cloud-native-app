@@ -1,0 +1,44 @@
+name: Build and Push Docker web image
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'web/**'
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v3
+
+#      - name: Docker Login
+#        run: docker login -u ${{secrets.DOCKER_USER}} -p ${{secrets.DOCKER_PASS}}
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASS }}
+
+  #    - name: Run docker build
+  #      run: |
+  #        docker build --tag sebkhedim/web:1.0 web/
+  #        docker push sebkhedim/web:1.0
+
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: sebkhedim/web:1.0
+          context: web/
+
+      - name: Build and publish a Docker image for ${{ github.repository }}
+        uses: macbre/push-to-ghcr@master
+        with:
+          image_name: ${{ github.repository }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
