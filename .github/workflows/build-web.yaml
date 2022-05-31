@@ -36,9 +36,3 @@ jobs:
           push: true
           tags: sebkhedim/web:1.0
           context: web/
-
-      - name: Build and publish a Docker image for ${{ github.repository }}
-        uses: macbre/push-to-ghcr@master
-        with:
-          image_name: ${{ github.repository }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
